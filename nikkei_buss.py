@@ -36,18 +36,20 @@ for line in filename:
         for text in http_text:
             if re.search(r'http*',text):
                 if is_japanese(text) == False:
-                    url = text.lstrip()
-                    try:
-                        fp=urlopen(url)
-                    except urllib.error.HTTPError as e:
-                        pass
-                    soup = BeautifulSoup(fp.read(), "html.parser")
-                    if soup.title != None:
-                        text = soup.findAll("div",class_="articleBody")
-                        if text != []:
-                            print('---------------',file=outputfile)
-                            print(soup.title.string,file=outputfile)
-                            for word in text:
-                                print(word.get_text(),file=outputfile)
+                    url = text.strip()
+                    if "nkbp" in text:
+                        print(text)
+                        try:
+                            fp=urlopen(url)
+                        except urllib.error.HTTPError as e:
+                            pass
+                        soup = BeautifulSoup(fp.read(), "html.parser")
+                        if soup.title != None:
+                            texts = soup.findAll("p")
+                            if texts != []:
                                 print('---------------',file=outputfile)
+                                print(soup.title.string,file=outputfile)
+                                for word in texts:
+                                    print(word.get_text(),file=outputfile)
+                                    print('---------------',file=outputfile)
                     #news = soup.find('p', class_="ynDetailText")

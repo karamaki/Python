@@ -1,0 +1,4 @@
+git add hello.html
+git commit -m “add new file”
+git remote add origins https://github.com/karamaki/Python.git
+git push origins master

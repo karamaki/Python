@@ -33,21 +33,24 @@ for line in filename:
     if re.search(r'http*',line):
         line = line.rstrip()
         http_text = line.split(' ')
-        for text in http_text:
-            if re.search(r'http*',text):
-                if is_japanese(text) == False:
-                    url = text.lstrip()
-                    try:
-                        fp=urlopen(url)
-                    except urllib.error.HTTPError as e:
-                        pass
-                    soup = BeautifulSoup(fp.read(), "html.parser")
-                    if soup.title != None:
-                        text = soup.findAll("div",class_="abstract")
-                        if text != []:
-                            print('---------------',file=outputfile)
-                            print(soup.title.string,file=outputfile)
-                            for word in text:
-                                print(word.get_text(),file=outputfile)
-                                print('---------------',file=outputfile)
-                    #news = soup.find('p', class_="ynDetailText")
+        if re.search(r'http*',line):
+            if is_japanese(line) == False:
+                url = line.lstrip()
+                print(url)
+                try:
+                    fp=urlopen(url)
+                except urllib.error.HTTPError as e:
+                    pass
+                except urllib.error.URLError as e:
+                    pass
+                soup = BeautifulSoup(fp.read(), "html.parser")
+                texts = soup.findAll("div",class_="abstract")
+                print('---------------',file=outputfile)
+                if soup.title != None:
+                    print(soup.title.string,file=outputfile)
+                if texts == []:
+                    texts = soup.findAll("div",id="kiji")
+                if texts == []:
+                    texts = soup.findAll("div",class_="article-body")
+                for word in texts:
+                    print(word.get_text(),file=outputfile)
