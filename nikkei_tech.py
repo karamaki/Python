@@ -50,7 +50,9 @@ for line in filename:
                     print(soup.title.string,file=outputfile)
                 if texts == []:
                     texts = soup.findAll("div",id="kiji")
-                if texts == []:
+                elif texts == []:
                     texts = soup.findAll("div",class_="article-body")
+                elif texts == []:
+                    texts = soup.findAll("div",class_="p4 clearfix")
                 for word in texts:
                     print(word.get_text(),file=outputfile)
