@@ -28,7 +28,7 @@ def is_japanese(string):
     return False
 
 filename = open('日経テクノロジー のコピー.txt','r')
-outputfile = open('nikkei_tech_t.txt','w')
+outputfile = open('nikkei_tech_tech.txt','w')
 for line in filename:
     if re.search(r'http*',line):
         line = line.rstrip()
@@ -36,7 +36,6 @@ for line in filename:
         if re.search(r'http*',line):
             if is_japanese(line) == False:
                 url = line.lstrip()
-                print(url)
                 try:
                     fp=urlopen(url)
                 except urllib.error.HTTPError as e:
@@ -44,15 +43,23 @@ for line in filename:
                 except urllib.error.URLError as e:
                     pass
                 soup = BeautifulSoup(fp.read(), "html.parser")
-                texts = soup.findAll("div",class_="abstract")
+
                 print('---------------',file=outputfile)
                 if soup.title != None:
                     print(soup.title.string,file=outputfile)
-                if texts == []:
-                    texts = soup.findAll("div",id="kiji")
-                elif texts == []:
-                    texts = soup.findAll("div",class_="article-body")
-                elif texts == []:
-                    texts = soup.findAll("div",class_="p4 clearfix")
-                for word in texts:
-                    print(word.get_text(),file=outputfile)
+
+                texts = soup.find("div",class_="abstract")
+                if texts == None:
+                    texts = soup.find(id="kiji")
+                elif texts == None:
+                    texts = soup.find(class_="article-body")
+                elif texts == None:
+                    texts = soup.find(id="contents")
+
+                if texts == None:
+                    print(url,file=outputfile)
+
+                print(texts,file=outputfile)
+
+                #for word in texts:
+                    #print(word.string,file=outputfile)
